@@ -104,7 +104,46 @@ FROM ranked_categories
 WHERE state_rank <= 5
 ORDER BY customer_state, state_rank;
 ```
-![Top 5 product categories per state](./assets/images/top5procatstate.png)
+![Top 5 product categories per state](./assets/images/top-5-pro-cat-state.png)
+
+2. **Aggregate Functions - Running Monthly Totals**
+
+```sql
+-- Running monthly revenue totals
+SELECT 
+    TO_CHAR(o.order_purchase_timestamp, 'YYYY-MM') as month,
+    SUM(SUM(oi.price)) OVER (ORDER BY TO_CHAR(o.order_purchase_timestamp, 'YYYY-MM')) as running_total
+FROM olist_order_items oi
+JOIN olist_orders o ON oi.order_id = o.order_id
+GROUP BY TO_CHAR(o.order_purchase_timestamp, 'YYYY-MM');
+```
+
+![Running monthly revenue totals](./assets/images/running-monthly-total-revenues.png)
+
+3. **Navigation Functions - Month-over-Month Growth**
+
+```sql
+-- Month-over-month revenue growth by state
+WITH monthly_revenue AS (
+    SELECT 
+        c.customer_state,
+        TO_CHAR(o.order_purchase_timestamp, 'YYYY-MM') as month,
+        SUM(oi.price) as monthly_revenue
+    FROM olist_order_items oi
+    JOIN olist_orders o ON oi.order_id = o.order_id
+    JOIN olist_customers c ON o.customer_id = c.customer_id
+    GROUP BY c.customer_state, TO_CHAR(o.order_purchase_timestamp, 'YYYY-MM')
+)
+SELECT 
+    customer_state,
+    month,
+    monthly_revenue,
+    LAG(monthly_revenue) OVER (PARTITION BY customer_state ORDER BY month) as prev_month_revenue,
+    ROUND(((monthly_revenue - LAG(monthly_revenue) OVER (PARTITION BY customer_state ORDER BY month)) / 
+          LAG(monthly_revenue) OVER (PARTITION BY customer_state ORDER BY month)) * 100, 2) as growth_percent
+FROM monthly_revenue;
+```
+![Month over month revenue growth by state](./assets/images/month-over-month-growth.png)
 
 
 
