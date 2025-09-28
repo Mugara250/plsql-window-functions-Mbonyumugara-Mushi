@@ -198,3 +198,24 @@ CREATE TABLE olist_order_payments (
 - **Interpretation**
 
     This segments customers into four spending tiers. It identifies most valuable customer groups. This enables targeted campaigns for different customer value segments.
+
+## **Results Analysis - Olist Store Insights**
+
+### **1. Descriptive – What Happened?**
+- São Paulo generates 40% of total revenue, dominating other states
+- Bed & Bath and Health & Beauty are top categories across most regions
+- Top 25% of customers contribute 65% of total revenue
+- Revenue shows seasonal peaks in November and December
+
+### **2. Diagnostic – Why?**
+- SP's dominance due to higher population density and seller concentration
+- Northeastern states underperform from limited seller coverage and logistics
+- High-value customers make 3x more purchases than low-value customers
+- Revenue dips align with Brazil's economic instability periods
+
+### **3. Prescriptive – What Next?**
+- Launch targeted campaigns for mid-tier customers to increase spending
+- Expand seller recruitment in Northeastern states to improve coverage
+- Implement loyalty program for top 25% customers with exclusive benefits
+- Increase inventory for top-performing categories in high-growth regions
+- Create regional pricing strategies based on local market conditions
