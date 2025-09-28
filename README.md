@@ -2,14 +2,15 @@
 
 ## Problem Definition
 
-- **Business Context**: 
-    - **Company Type**: Olist Store - Brazilian e-commerce platform
-    - **Department**: Sales Analytics and Business Intelligence
-    - **Industry**: E-commerce and Marketplace.
+- **Business Context**:
+  - **Company Type**: Olist Store - Brazilian e-commerce platform
+  - **Department**: Sales Analytics and Business Intelligence
+  - **Industry**: E-commerce and Marketplace.
 - **Data Challenge**: Interpret sales performance across Brazilian states, identify top-performing product categories, segment customers by purchasing behaviour, and track sales trends to optimize inventory allocation and marketing strategies.
 - **Expected outcome**: Provide data-driven insights for regional marketing campaigns, inventory planning, and customer segmentation to increase sales by 15% in underperforming regions.
 
 ## Success Criteria
+
 1. Top 5 product categories per state -> `RANK()`
 2. Running monthly revenue totals -> `SUM() OVER()`
 3. Month-over-month revenue growth by state -> `LAG()`
@@ -17,6 +18,7 @@
 5. 3-month moving average of orders -> `AVG() OVER()`
 
 ## Olist Store Database Schema
+
 ```sql
 -- Core tables for window function analysis
 CREATE TABLE olist_customers (
@@ -72,80 +74,99 @@ CREATE TABLE olist_order_payments (
     FOREIGN KEY (order_id) REFERENCES olist_orders(order_id)
 );
 ```
+
 ### ER Diagram
+
 ![ER diagram of the Olist store database schema](./assets/images/database-schema.png)
 
 ## Window Functions Implementation
 
 1. **Ranking Functions - Top Products by State**
 
-```sql
--- Top 5 product categories per state
-WITH ranked_categories AS (
-    SELECT 
-        c.customer_state,
-        COALESCE(t.product_category_name_english, p.product_category_name) as category_name,
-        SUM(oi.price) as total_revenue,
-        RANK() OVER (PARTITION BY c.customer_state ORDER BY SUM(oi.price) DESC) as state_rank
-    FROM olist_order_items oi
-    JOIN olist_orders o ON oi.order_id = o.order_id
-    JOIN olist_customers c ON o.customer_id = c.customer_id
-    JOIN olist_products p ON oi.product_id = p.product_id
-    LEFT JOIN olist_product_category_name_translation t 
-        ON p.product_category_name = t.product_category_name
-    GROUP BY c.customer_state, p.product_category_name, t.product_category_name_english
-)
-SELECT 
-    customer_state,
-    category_name,
-    total_revenue,
-    state_rank
-FROM ranked_categories
-WHERE state_rank <= 5
-ORDER BY customer_state, state_rank;
-```
-![Top 5 product categories per state](./assets/images/top-5-pro-cat-state.png)
+- **Query**
+
+    ```sql
+        -- Top 5 product categories per state
+        WITH ranked_categories AS (
+            SELECT
+                c.customer_state,
+                COALESCE(t.product_category_name_english, p.product_category_name) as category_name,
+                SUM(oi.price) as total_revenue,
+                RANK() OVER (PARTITION BY c.customer_state ORDER BY SUM(oi.price) DESC) as state_rank
+            FROM olist_order_items oi
+            JOIN olist_orders o ON oi.order_id = o.order_id
+            JOIN olist_customers c ON o.customer_id = c.customer_id
+            JOIN olist_products p ON oi.product_id = p.product_id
+            LEFT JOIN olist_product_category_name_translation t
+                ON p.product_category_name = t.product_category_name
+            GROUP BY c.customer_state, p.product_category_name, t.product_category_name_english
+        )
+        SELECT
+            customer_state,
+            category_name,
+            total_revenue,
+            state_rank
+        FROM ranked_categories
+        WHERE state_rank <= 5
+        ORDER BY customer_state, state_rank;
+    ```
+
+    ![Top 5 product categories per state](./assets/images/top-5-pro-cat-state.png)
+
+- **Interpretation** 
+
+    This identifies top product categories by revenue in each state. It reveals regional best-sellers and customer preferences. Olist can use this for targeted regional marketing and inventory planning.
 
 2. **Aggregate Functions - Running Monthly Totals**
 
-```sql
--- Running monthly revenue totals
-SELECT 
-    TO_CHAR(o.order_purchase_timestamp, 'YYYY-MM') as month,
-    SUM(SUM(oi.price)) OVER (ORDER BY TO_CHAR(o.order_purchase_timestamp, 'YYYY-MM')) as running_total
-FROM olist_order_items oi
-JOIN olist_orders o ON oi.order_id = o.order_id
-GROUP BY TO_CHAR(o.order_purchase_timestamp, 'YYYY-MM');
-```
+- **Query**
 
-![Running monthly revenue totals](./assets/images/running-monthly-total-revenues.png)
+    ```sql
+    -- Running monthly revenue totals
+    SELECT
+        TO_CHAR(o.order_purchase_timestamp, 'YYYY-MM') as month,
+        SUM(SUM(oi.price)) OVER (ORDER BY TO_CHAR(o.order_purchase_timestamp, 'YYYY-MM')) as running_total
+    FROM olist_order_items oi
+    JOIN olist_orders o ON oi.order_id = o.order_id
+    GROUP BY TO_CHAR(o.order_purchase_timestamp, 'YYYY-MM');
+    ```
+
+    ![Running monthly revenue totals](./assets/images/running-monthly-total-revenues.png)
+
+- **Interpretation**
+
+    This shows cumulative revenue growth over time. It tracks business expansion and revenue milestones. Management can visualize overall company performance and growth trends.
 
 3. **Navigation Functions - Month-over-Month Growth**
 
-```sql
--- Month-over-month revenue growth by state
-WITH monthly_revenue AS (
-    SELECT 
-        c.customer_state,
-        TO_CHAR(o.order_purchase_timestamp, 'YYYY-MM') as month,
-        SUM(oi.price) as monthly_revenue
-    FROM olist_order_items oi
-    JOIN olist_orders o ON oi.order_id = o.order_id
-    JOIN olist_customers c ON o.customer_id = c.customer_id
-    GROUP BY c.customer_state, TO_CHAR(o.order_purchase_timestamp, 'YYYY-MM')
-)
-SELECT 
-    customer_state,
-    month,
-    monthly_revenue,
-    LAG(monthly_revenue) OVER (PARTITION BY customer_state ORDER BY month) as prev_month_revenue,
-    ROUND(((monthly_revenue - LAG(monthly_revenue) OVER (PARTITION BY customer_state ORDER BY month)) / 
-          LAG(monthly_revenue) OVER (PARTITION BY customer_state ORDER BY month)) * 100, 2) as growth_percent
-FROM monthly_revenue;
-```
-![Month over month revenue growth by state](./assets/images/month-over-month-growth.png)
+- **Query**
 
+    ```sql
+    -- Month-over-month revenue growth by state
+    WITH monthly_revenue AS (
+        SELECT
+            c.customer_state,
+            TO_CHAR(o.order_purchase_timestamp, 'YYYY-MM') as month,
+            SUM(oi.price) as monthly_revenue
+        FROM olist_order_items oi
+        JOIN olist_orders o ON oi.order_id = o.order_id
+        JOIN olist_customers c ON o.customer_id = c.customer_id
+        GROUP BY c.customer_state, TO_CHAR(o.order_purchase_timestamp, 'YYYY-MM')
+    )
+    SELECT
+        customer_state,
+        month,
+        monthly_revenue,
+        LAG(monthly_revenue) OVER (PARTITION BY customer_state ORDER BY month) as prev_month_revenue,
+        ROUND(((monthly_revenue - LAG(monthly_revenue) OVER (PARTITION BY customer_state ORDER BY month)) /
+            LAG(monthly_revenue) OVER (PARTITION BY customer_state ORDER BY month)) * 100, 2) as growth_percent
+    FROM monthly_revenue;
+    ```
 
+    ![Month over month revenue growth by state](./assets/images/month-over-month-growth.png)
 
+- **Interpretation**
+
+    This calculates monthly revenue changes across states. It highlights growth spikes and seasonal patterns. Olist can identify underperforming regions needing investigation.
 
 
