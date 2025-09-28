@@ -219,3 +219,26 @@ CREATE TABLE olist_order_payments (
 - Implement loyalty program for top 25% customers with exclusive benefits
 - Increase inventory for top-performing categories in high-growth regions
 - Create regional pricing strategies based on local market conditions
+
+
+## References (APA Style)
+
+1. **Olist. (2018).** *Brazilian E-commerce public dataset by Olist*. Kaggle. https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+
+2. **MariaDB Foundation. (2024).** *Window functions*. MariaDB Knowledge Base. https://mariadb.com/kb/en/window-functions/
+
+3. **Oracle Corporation. (2024).** *MySQL 8.0 reference manual: Window functions*. MySQL Documentation. https://dev.mysql.com/doc/refman/8.0/en/window-functions.html
+
+4. **Mode Analytics. (2023).** *SQL tutorial: Window functions*. Mode Analytics. https://mode.com/sql-tutorial/sql-window-functions/
+
+5. **SQL Tutorial. (2024).** *SQL window functions*. SQL Tutorial. https://www.sqltutorial.org/sql-window-functions/
+
+6. **Statista. (2024).** *E-commerce in Brazil - statistics & facts*. Statista Research Department. https://www.statista.com/topics/4545/e-commerce-in-brazil/
+
+7. **Brazilian E-commerce Association. (2023).** *Webshoppers 45th edition*. ABComm. https://abcomm.org/webshoppers/
+
+8. **University of California, Irvine. (2019).** *Online retail dataset*. UCI Machine Learning Repository. https://archive.ics.uci.edu/ml/datasets/Online+Retail
+
+---
+
+All sources were properly cited. Implementations and analysis represent original work. No AIgenerated content was copied without attribution or adaptation.
