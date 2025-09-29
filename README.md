@@ -137,7 +137,7 @@ CREATE TABLE olist_order_payments (
 
     This shows cumulative revenue growth over time. It tracks business expansion and revenue milestones. Management can visualize overall company performance and growth trends.
 
-3. **Navigation Functions - Month-over-Month Growth**
+3. **Navigation Functions - Month-over-Month Revenue Growth by State**
 
 - **Query**
 
