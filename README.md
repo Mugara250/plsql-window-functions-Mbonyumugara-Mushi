@@ -81,7 +81,7 @@ CREATE TABLE olist_order_payments (
 
 ## Window Functions Implementation
 
-1. **Ranking Functions - Top Products by State**
+1. **Ranking Functions - Top Product Categories by State**
 
 - **Query**
 
