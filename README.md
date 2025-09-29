@@ -111,7 +111,7 @@ CREATE TABLE olist_order_payments (
         ORDER BY customer_state, state_rank;
     ```
 
-    ![Top 5 product categories per state](./assets/screenshots/top-5-pro-cat-state.png)
+    ![Top 5 product categories per state](./screenshots/top-5-pro-cat-state.png)
 
 - **Interpretation** 
 
@@ -131,7 +131,7 @@ CREATE TABLE olist_order_payments (
     GROUP BY TO_CHAR(o.order_purchase_timestamp, 'YYYY-MM');
     ```
 
-    ![Running monthly revenue totals](./assets/screenshots/running-monthly-total-revenues.png)
+    ![Running monthly revenue totals](./screenshots/running-monthly-total-revenues.png)
 
 - **Interpretation**
 
@@ -163,7 +163,7 @@ CREATE TABLE olist_order_payments (
     FROM monthly_revenue;
     ```
 
-    ![Month over month revenue growth by state](./assets/screenshots/month-over-month-growth.png)
+    ![Month over month revenue growth by state](./screenshots/month-over-month-growth.png)
 
 - **Interpretation**
 
@@ -193,7 +193,7 @@ CREATE TABLE olist_order_payments (
     FROM customer_spending
     ```
 
-    ![Customer segmentation](./assets/screenshots/customer-segmentation.png)
+    ![Customer segmentation](./screenshots/customer-segmentation.png)
 
 - **Interpretation**
 
