@@ -169,7 +169,7 @@ CREATE TABLE olist_order_payments (
 
     This calculates monthly revenue changes across states. It highlights growth spikes and seasonal patterns. Olist can identify underperforming regions needing investigation.
 
-4. **Distribution Functions - Customer Segmentation**
+4. **Distribution Functions - Customer Spending Quartiles**
 
 - **Query**
 
