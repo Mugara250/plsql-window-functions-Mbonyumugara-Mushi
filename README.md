@@ -117,7 +117,7 @@ CREATE TABLE olist_order_payments (
 
     This identifies top product categories by revenue in each state. It reveals regional best-sellers and customer preferences. Olist can use this for targeted regional marketing and inventory planning.
 
-2. **Aggregate Functions - Running Monthly Totals**
+2. **Aggregate Functions - Running Monthly Revenue Totals**
 
 - **Query**
 
